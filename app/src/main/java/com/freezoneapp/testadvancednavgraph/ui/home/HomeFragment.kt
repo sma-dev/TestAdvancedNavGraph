@@ -1,23 +1,14 @@
 package com.freezoneapp.testadvancednavgraph.ui.home
 
 import android.os.Bundle
-import android.util.Log
-import android.util.SparseArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.core.util.forEach
-import androidx.core.util.set
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import com.freezoneapp.testadvancednavgraph.*
+import com.freezoneapp.testadvancednavgraph.R
 
 class HomeFragment : Fragment() {
 
@@ -75,6 +66,7 @@ class HomeFragment : Fragment() {
         //setupDeepLinks(navGraphIds, fragmentManager, containerId, intent)
 
         // Finally, ensure that we update our BottomNavigationView when the back stack changes
+
         /*fragmentManager.addOnBackStackChangedListener {
             if (!isOnFirstFragment && !fragmentManager.isOnBackStack(firstFragmentTag)) {
                 this.selectedItemId = firstFragmentGraphId

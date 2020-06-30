@@ -1,12 +1,14 @@
 package com.freezoneapp.testadvancednavgraph.ui
 
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.freezoneapp.testadvancednavgraph.R
 
 class HomeSeqFragment2 : Fragment() {
@@ -21,7 +23,11 @@ class HomeSeqFragment2 : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.home_seq_fragment2_fragment, container, false)
+        val root = inflater.inflate(R.layout.home_seq_fragment2_fragment, container, false)
+        root.findViewById<TextView>(R.id.back).setOnClickListener {
+            Log.d("BACK_S", findNavController().popBackStack(R.id.seq_home, true).toString())
+        }
+        return root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
