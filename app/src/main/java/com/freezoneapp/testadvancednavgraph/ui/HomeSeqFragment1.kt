@@ -20,7 +20,9 @@ class HomeSeqFragment1 : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.home_seq_fragment1_fragment, container, false)
-        findNavController().navigate(R.id.action_seq_home_to_seq_home2)
+        root.findViewById<Button>(R.id.btn_next).setOnClickListener {
+            findNavController().navigate(R.id.action_seq_home_to_seq_home2)
+        }
         return root
     }
 
