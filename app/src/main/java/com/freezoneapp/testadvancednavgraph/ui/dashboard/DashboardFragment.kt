@@ -1,6 +1,7 @@
 package com.freezoneapp.testadvancednavgraph.ui.dashboard
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +13,25 @@ import com.freezoneapp.testadvancednavgraph.ui.NavManager
 class DashboardFragment : Fragment() {
 
     private lateinit var dashboardViewModel: DashboardViewModel
-    private lateinit var navManager: NavManager
+    private var navManager: NavManager? = null
+
+
+    init {
+        Log.d("NavService", "Created!")
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (navManager == null) {
+            navManager = NavManager(
+                fragmentManager = childFragmentManager,
+                fragmentTag = "frag#1",
+                containerId = R.id.dashboard_home_nav,
+                navGraphId = R.navigation.nav_dashboard,
+                isPrimaryNavFragment = true
+            )
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -23,13 +42,7 @@ class DashboardFragment : Fragment() {
             ViewModelProvider(this).get(DashboardViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_dashboard, container, false)
 
-        navManager = NavManager(
-            fragmentManager = childFragmentManager,
-            fragmentTag = "frag#1",
-            containerId = R.id.dashboard_home_nav,
-            navGraphId = R.navigation.nav_dashboard,
-            isPrimaryNavFragment = true
-        )
+
         return root
     }
 }
