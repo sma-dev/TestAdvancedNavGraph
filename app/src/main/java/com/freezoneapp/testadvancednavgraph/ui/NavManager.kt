@@ -1,6 +1,7 @@
 package com.freezoneapp.testadvancednavgraph.ui
 
 import androidx.fragment.app.FragmentManager
+import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 
 
@@ -11,6 +12,7 @@ class NavManager(
     containerId: Int,
     isPrimaryNavFragment: Boolean
 ) {
+    private var navController: NavController
 
     init {
         val navHostFragment = obtainNavHostFragment(
@@ -18,6 +20,7 @@ class NavManager(
             fragmentTag,
             navGraphId, containerId
         )
+        navController = navHostFragment.navController
         attachNavHostFragment(fragmentManager, navHostFragment, isPrimaryNavFragment)
     }
 
