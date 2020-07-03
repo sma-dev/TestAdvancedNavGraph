@@ -1,30 +1,36 @@
 package com.freezoneapp.testadvancednavgraph
 
 import android.os.Bundle
-import android.util.Log
+import android.view.MenuItem
+import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentManager
-import androidx.navigation.NavController
+import androidx.fragment.app.Fragment
+import androidx.navigation.NavDestination
+import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
-import androidx.navigation.get
+import androidx.navigation.plusAssign
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var navController: NavController
-    private lateinit var baseFragmentManager: FragmentManager
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val navView: BottomNavigationView = findViewById(R.id.nav_view)
+        val navigation: BottomNavigationView = findViewById(R.id.nav_view)
 
-        navController = findNavController(R.id.nav_host_fragment)
-        baseFragmentManager =
-            supportFragmentManager.findFragmentById(R.id.nav_host_fragment)?.childFragmentManager!!
+        val navController = findNavController(R.id.nav_host_fragment)
+        val navHostFragment: Fragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment)!!
+        val navigator = KeepStateNavigator(
+            context = this,
+            manager = navHostFragment.childFragmentManager,
+            containerId = R.id.nav_host_fragment
+        )
+
+        navController.navigatorProvider.plusAssign(navigator)
+        navController.setGraph(R.navigation.mobile_navigation)
+
 
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -33,65 +39,44 @@ class MainActivity : AppCompatActivity() {
                 R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications
             )
         )
-        setupActionBarWithNavController(navController, appBarConfiguration)
-        navView.setupWithNavController(navController)
-        var reSelectedTag = 0
-
-        baseFragmentManager.addOnBackStackChangedListener {
-            Log.d("NavService", baseFragmentManager.backStackEntryCount.toString())
-        }
-
-        navController.navigate(R.id.navigation_home)
-        navView.setOnNavigationItemReselectedListener {
-            if (reSelectedTag == 0) {
-                Log.d("NavService", "double!")
-                navController.popBackStack(it.itemId, true)
-                navController.navigate(it.itemId)
-                reSelectedTag = it.itemId
+        //setupActionBarWithNavController(navController, appBarConfiguration)
+        navigation.setOnNavigationItemReselectedListener {  }
+        navigation.setOnNavigationItemSelectedListener {
+            val builder = NavOptions.Builder()
+                .setLaunchSingleTop(true)
+                .setEnterAnim(R.anim.nav_default_enter_anim)
+                .setExitAnim(R.anim.nav_default_exit_anim)
+                .setPopEnterAnim(R.anim.nav_default_pop_enter_anim)
+                .setPopExitAnim(R.anim.nav_default_pop_exit_anim)
+            val options = builder.build()
+            try {
+                //TODO provide proper API instead of using Exceptions as Control-Flow.
+                navController.navigate(it.itemId, null, options)
+                true
+            } catch (e: IllegalArgumentException) {
+                false
             }
         }
-        navView.setOnNavigationItemSelectedListener { item ->
-            when {
-                navController.currentDestination != navController.graph[item.itemId] -> {
-                    reSelectedTag = 0
-                    if (baseFragmentManager.isOnBackStack(item.itemId)) {
-                        Log.d("NavService", "back!")
-                        navController.popBackStack(item.itemId, false)
-                    } else {
-                        Log.d("NavService", "nav!")
-                        navController.navigate(item.itemId)
-                    }
-                    true
-                }
-                else -> false
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            val menu = navigation.menu
+            for (h in 0 until menu.size()) {
+            val item: MenuItem = menu.getItem(h)
+                if (matchDestination(destination, item.itemId)) {
+                item.isChecked = true
             }
         }
+        }
+        
+    }
+    private fun matchDestination(
+        destination: NavDestination,
+        @IdRes destId: Int
+    ): Boolean {
+        var currentDestination: NavDestination? = destination
+        while (currentDestination!!.id != destId && currentDestination.parent != null) {
+            currentDestination = currentDestination.parent
+        }
+        return currentDestination.id == destId
     }
 
-    override fun onBackPressed() {
-        when (navController.currentDestination) {
-            navController.graph[R.id.navigation_home] -> {
-                if (baseFragmentManager.backStackEntryCount > 1) {
-                    navController.popBackStack()
-                } else {
-                    moveTaskToBack(true)
-                    finish()
-                }
-            }
-            else -> {
-                super.onBackPressed()
-            }
-        }
-
-    }
-
-    private fun FragmentManager.isOnBackStack(backStackId: Int): Boolean {
-        val backStackCount = backStackEntryCount
-        for (index in 0 until backStackCount) {
-            if (getBackStackEntryAt(index).name!!.contains(backStackId.toString())) {
-                return true
-            }
-        }
-        return false
-    }
 }
