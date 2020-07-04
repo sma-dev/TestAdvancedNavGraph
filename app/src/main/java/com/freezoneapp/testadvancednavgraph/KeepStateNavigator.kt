@@ -11,6 +11,7 @@ import androidx.navigation.Navigator
 import androidx.navigation.fragment.FragmentNavigator
 import java.util.*
 
+const val CREATE_PARAM = "create"
 
 @Navigator.Name("keep_state_fragment") // `keep_state_fragment` is used in navigation xml
 class KeepStateNavigator(
@@ -30,7 +31,10 @@ class KeepStateNavigator(
         navOptions: NavOptions?,
         navigatorExtras: Navigator.Extras?
     ): NavDestination? {
-
+        var create = false
+        args?.let {
+            create = it.getBoolean(CREATE_PARAM)
+        }
         val tag = destination.id.toString()
         val transaction = manager.beginTransaction()
 
@@ -44,8 +48,13 @@ class KeepStateNavigator(
             initialId = destination.id
         }
 
+
         var fragment = manager.findFragmentByTag(tag)
-        if (fragment == null) {
+
+        if (create && fragment != null) {
+            transaction.remove(fragment)
+        }
+        if (create || fragment == null) {
             val className = destination.className
             fragment = manager.fragmentFactory.instantiate(context.classLoader, className)
             transaction.add(containerId, fragment, tag)
@@ -61,13 +70,18 @@ class KeepStateNavigator(
                 mBackStack.remove(destination)
             }
         }
-        mBackStack.add(destination)
 
         transaction.setPrimaryNavigationFragment(fragment)
         transaction.setReorderingAllowed(true)
         transaction.commit()
 
-        return destination
+        logD(" ")
+        mBackStack.forEach { logD(it.label.toString()) }
+
+        return if (!create) {
+            mBackStack.add(destination)
+            destination
+        } else null
     }
 
     override fun popBackStack(): Boolean {

@@ -1,10 +1,10 @@
 package com.freezoneapp.testadvancednavgraph
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavDestination
 import androidx.navigation.NavOptions
@@ -14,7 +14,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
 
-    @SuppressLint("RestrictedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -33,7 +32,21 @@ class MainActivity : AppCompatActivity() {
         navController.navigatorProvider.plusAssign(navigator)
         navController.setGraph(R.navigation.graph_root)
 
-        navigation.setOnNavigationItemReselectedListener { }
+        var allowReselectedNav = true
+
+        navigation.setOnNavigationItemReselectedListener {
+            if (allowReselectedNav) {
+                val builder = NavOptions.Builder()
+                    .setLaunchSingleTop(true)
+                    .setEnterAnim(R.anim.nav_default_enter_anim)
+                    .setExitAnim(R.anim.nav_default_exit_anim)
+                    .setPopEnterAnim(R.anim.nav_default_pop_enter_anim)
+                    .setPopExitAnim(R.anim.nav_default_pop_exit_anim)
+                val options = builder.build()
+                navController.navigate(it.itemId, bundleOf(CREATE_PARAM to true), options)
+                allowReselectedNav = false
+            }
+        }
         navigation.setOnNavigationItemSelectedListener {
             val builder = NavOptions.Builder()
                 .setLaunchSingleTop(true)
@@ -45,6 +58,7 @@ class MainActivity : AppCompatActivity() {
             try {
                 //TODO provide proper API instead of using Exceptions as Control-Flow.
                 navController.navigate(it.itemId, null, options)
+                allowReselectedNav = true
                 true
             } catch (e: IllegalArgumentException) {
                 false

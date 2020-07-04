@@ -2,14 +2,14 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/home_nav"
+    android:id="@+id/graph_home"
     app:startDestination="@+id/navigation_home_seq1"
     tools:ignore="UnusedNavigation">
 
     <fragment
         android:id="@+id/navigation_home_seq1"
         android:name="com.freezoneapp.testadvancednavgraph.ui.home.fragments.HomeSeqFragment1"
-        android:label="title_seq_home"
+        android:label="navigation_home_seq1"
         tools:layout="@layout/home_seq_fragment1_fragment" >
         <action
             android:id="@+id/action_seq_home_to_seq_home2"
@@ -20,6 +20,6 @@
     <fragment
         android:id="@+id/navigation_home_seq2"
         android:name="com.freezoneapp.testadvancednavgraph.ui.home.fragments.HomeSeqFragment2"
-        android:label="title_seq_home2"
+        android:label="navigation_home_seq2"
         tools:layout="@layout/home_seq_fragment2_fragment" />
 </navigation>
