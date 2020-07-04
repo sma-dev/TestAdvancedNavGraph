@@ -1,4 +1,4 @@
-package com.freezoneapp.testadvancednavgraph.ui.notifications
+package com.freezoneapp.testadvancednavgraph.ui.dashboard.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,15 +7,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.freezoneapp.testadvancednavgraph.R
 
-class NotificationsFragment : Fragment() {
-
+class DashboardSeqFragment1 : Fragment() {
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+        inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val root = inflater.inflate(R.layout.fragment_notifications, container, false)
-        return root
+        return inflater.inflate(R.layout.dashboard_seq_fragment1, container, false)
     }
+
 }

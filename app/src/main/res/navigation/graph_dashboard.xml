@@ -3,11 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_dashboard"
-    app:startDestination="@id/tempFrag1">
+    app:startDestination="@id/navigation_dashboard_seq1"
+    tools:ignore="UnusedNavigation">
 
     <fragment
-        android:id="@+id/tempFrag1"
-        android:name="com.freezoneapp.testadvancednavgraph.TempFrag1"
+        android:id="@+id/navigation_dashboard_seq1"
+        android:name="com.freezoneapp.testadvancednavgraph.ui.dashboard.fragments.DashboardSeqFragment1"
         android:label="temp_frag1_fragment"
-        tools:layout="@layout/temp_frag1_fragment" />
+        tools:layout="@layout/dashboard_seq_fragment1" />
 </navigation>

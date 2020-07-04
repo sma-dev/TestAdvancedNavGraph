@@ -1,8 +1,10 @@
 package com.freezoneapp.testadvancednavgraph
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.FragmentManager
+import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.NavOptions
 import androidx.navigation.Navigator
@@ -14,32 +16,35 @@ import java.util.*
 class KeepStateNavigator(
     private val context: Context,
     private val manager: FragmentManager, // Should pass childFragmentManager.
-    private val containerId: Int
+    private val containerId: Int,
+    private val navController: NavController
 ) : FragmentNavigator(context, manager, containerId) {
 
-    private val mBackStack = ArrayDeque<Int>()
+    private val mBackStack = ArrayDeque<Destination>()
+    private var initialId: Int = 0
 
+    @SuppressLint("RestrictedApi")
     override fun navigate(
         destination: Destination,
         args: Bundle?,
         navOptions: NavOptions?,
         navigatorExtras: Navigator.Extras?
     ): NavDestination? {
-        logD("On navigate ${destination.label}")
-        logD("On navigate ${destination.id}")
+
         val tag = destination.id.toString()
         val transaction = manager.beginTransaction()
 
         var initialNavigate = false
+        val containsInBackStack = mBackStack.contains(destination) && destination.id != initialId
         val currentFragment = manager.primaryNavigationFragment
         if (currentFragment != null) {
             transaction.detach(currentFragment)
         } else {
             initialNavigate = true
+            initialId = destination.id
         }
 
         var fragment = manager.findFragmentByTag(tag)
-        logD("fragment is null : ${fragment == null}")
         if (fragment == null) {
             val className = destination.className
             fragment = manager.fragmentFactory.instantiate(context.classLoader, className)
@@ -47,17 +52,21 @@ class KeepStateNavigator(
         } else {
             transaction.attach(fragment)
         }
+
         if (!initialNavigate) {
-            transaction.addToBackStack((mBackStack.size + 1).toString() + "-" + destination.id.toString())
+            if (containsInBackStack) {
+                navController.backStack.remove(
+                    navController.backStack.elementAt(mBackStack.indexOf(destination) + 1)
+                )
+                mBackStack.remove(destination)
+            }
         }
+        mBackStack.add(destination)
 
         transaction.setPrimaryNavigationFragment(fragment)
         transaction.setReorderingAllowed(true)
         transaction.commit()
 
-        logD("is initialNavigate : $initialNavigate")        // The commit succeeded, update our view of the world
-
-        mBackStack.add(destination.id)
         return destination
     }
 
@@ -76,18 +85,12 @@ class KeepStateNavigator(
             logD("peekLast is null")
             return false
         }
-        logD(
-            "Back! ${generateBackStackName(mBackStack.size, mBackStack.peekLast()!!)}"
-        )
-        manager.popBackStack(
-            generateBackStackName(mBackStack.size, mBackStack.peekLast()!!), -1
-        )
+
         mBackStack.removeLast()
+        val backDest = mBackStack.last
+        mBackStack.removeLast()
+        navigate(backDest, null, null, null)
 
         return true
-    }
-
-    private fun generateBackStackName(backStackIndex: Int, destId: Int): String {
-        return "$backStackIndex-$destId"
     }
 }

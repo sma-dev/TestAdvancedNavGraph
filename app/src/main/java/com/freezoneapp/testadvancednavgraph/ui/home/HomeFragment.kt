@@ -5,13 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import com.freezoneapp.testadvancednavgraph.R
 import com.freezoneapp.testadvancednavgraph.ui.NavManager
 
 class HomeFragment : Fragment() {
 
-    private lateinit var homeViewModel: HomeViewModel
     private lateinit var navManager: NavManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,8 +17,8 @@ class HomeFragment : Fragment() {
         navManager = NavManager(
             fragmentManager = childFragmentManager,
             fragmentTag = R.id.navigation_home.toString(),
-            containerId = R.id.home_nav_host,
-            navGraphId = R.navigation.nav_home,
+            containerId = R.id.nav_container_home,
+            navGraphId = R.navigation.graph_home,
             isPrimaryNavFragment = true
         )
 
@@ -31,7 +29,6 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_home, container, false)
 
         return root

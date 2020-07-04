@@ -3,23 +3,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/home_nav"
-    app:startDestination="@+id/seq_home"
+    app:startDestination="@+id/navigation_home_seq1"
     tools:ignore="UnusedNavigation">
 
     <fragment
-        android:id="@+id/seq_home"
-        android:name="com.freezoneapp.testadvancednavgraph.ui.HomeSeqFragment1"
+        android:id="@+id/navigation_home_seq1"
+        android:name="com.freezoneapp.testadvancednavgraph.ui.home.fragments.HomeSeqFragment1"
         android:label="title_seq_home"
         tools:layout="@layout/home_seq_fragment1_fragment" >
         <action
             android:id="@+id/action_seq_home_to_seq_home2"
-            app:destination="@id/seq_home2"
+            app:destination="@id/navigation_home_seq2"
             app:popUpToInclusive="false" />
     </fragment>
 
     <fragment
-        android:id="@+id/seq_home2"
-        android:name="com.freezoneapp.testadvancednavgraph.ui.HomeSeqFragment2"
+        android:id="@+id/navigation_home_seq2"
+        android:name="com.freezoneapp.testadvancednavgraph.ui.home.fragments.HomeSeqFragment2"
         android:label="title_seq_home2"
         tools:layout="@layout/home_seq_fragment2_fragment" />
 </navigation>

@@ -3,11 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#2196F3"
-    tools:context=".ui.HomeSeqFragment2">
+    tools:context=".ui.dashboard.fragments.DashboardSeqFragment1">
 
     <TextView
-        android:id="@+id/back"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="Hello" />
